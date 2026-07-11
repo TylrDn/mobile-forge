@@ -52,14 +52,7 @@ jobs:
           fi
 
       - name: EAS Build
-        id: build
         run: |
-          BUILD_OUTPUT=$(eas build \
-            --platform all \
-            --profile ${{ steps.profile.outputs.profile }} \
-            --non-interactive \
-            --json 2>/dev/null || true)
-          echo "output=$BUILD_OUTPUT" >> "$GITHUB_OUTPUT"
           eas build \
             --platform all \
             --profile ${{ steps.profile.outputs.profile }} \
@@ -71,27 +64,3 @@ jobs:
           eas submit \
             --platform all \
             --non-interactive
-
-      - name: Post build URL to PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const profile = '${{ steps.profile.outputs.profile }}';
-            const branch = '${{ github.ref_name }}';
-            const body = [
-              `### 🏗️ EAS Build triggered`,
-              ``,
-              `- **Profile:** \`${profile}\``,
-              `- **Branch:** \`${branch}\``,
-              `- **Platform:** iOS + Android`,
-              ``,
-              `View build status at [expo.dev/builds](https://expo.dev/builds).`,
-            ].join('\n');
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body,
-            });

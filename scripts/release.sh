@@ -53,6 +53,12 @@ MAJOR=$(echo "$VERSION" | cut -d. -f1)
 MINOR=$(echo "$VERSION" | cut -d. -f2)
 PATCH=$(echo "$VERSION" | cut -d. -f3)
 
+# Derive numeric build numbers from the semver components.
+# Formula: MAJOR * 10000 + MINOR * 100 + PATCH
+# This produces a monotonically increasing integer for any valid semver within:
+#   MAJOR ≤ 214 (stays within 32-bit signed int at max MINOR/PATCH)
+#   MINOR ≤ 99, PATCH ≤ 99
+# Example: 1.2.3 → 10203, 2.0.0 → 20000
 IOS_BUILD_NUMBER=$(( MAJOR * 10000 + MINOR * 100 + PATCH ))
 ANDROID_VERSION_CODE=$IOS_BUILD_NUMBER
 

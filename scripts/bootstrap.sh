@@ -57,7 +57,12 @@ if ! command -v eas > /dev/null 2>&1; then
   warn "eas-cli is not installed. Installing globally..."
   bun install -g eas-cli
 fi
-success "eas $(eas --version 2>/dev/null || echo 'installed')"
+EAS_VERSION=$(eas --version 2>/dev/null)
+if [ $? -eq 0 ] && [ -n "$EAS_VERSION" ]; then
+  success "eas ${EAS_VERSION}"
+else
+  success "eas installed (run 'eas --version' to verify)"
+fi
 
 echo ""
 
