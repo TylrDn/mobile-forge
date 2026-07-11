@@ -23,7 +23,7 @@ echo ""
 # ── git ──────────────────────────────────────────────────────────────────────
 
 if command -v git > /dev/null 2>&1; then
-  ok "git $(git --version | awk '{print $3}')"
+  ok "git $(git --version | sed 's/git version //')"
 else
   fail "git — not found. Install from https://git-scm.com"
 fi
