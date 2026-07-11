@@ -1,13 +1,16 @@
-name: EAS Build
+name: Release
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+"
+    # Note: GitHub tag pattern matching does not support regex — dots here match
+    # literal dots in the tag name (GitHub uses glob-style matching, not regex).
 
 jobs:
-  build:
-    name: EAS Preview Build
+  release:
+    name: EAS Build + Submit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,9 +44,15 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: EAS Build (preview)
+      - name: EAS Build (production)
         run: |
           eas build \
             --platform all \
-            --profile preview \
+            --profile production \
+            --non-interactive
+
+      - name: EAS Submit
+        run: |
+          eas submit \
+            --platform all \
             --non-interactive
