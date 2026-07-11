@@ -1,0 +1,66 @@
+name: EAS Build
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    name: EAS Build (${{ github.ref_name }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Setup Expo + EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Determine build profile
+        id: profile
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "profile=production" >> "$GITHUB_OUTPUT"
+          else
+            echo "profile=preview" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: EAS Build
+        run: |
+          eas build \
+            --platform all \
+            --profile ${{ steps.profile.outputs.profile }} \
+            --non-interactive
+
+      - name: EAS Submit (production only)
+        if: github.ref_name == 'main'
+        run: |
+          eas submit \
+            --platform all \
+            --non-interactive
