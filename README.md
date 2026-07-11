@@ -8,8 +8,10 @@
 mobile-forge/
 ├── docs/               # Architecture decisions, runbooks, platform guides
 ├── scripts/            # Dev automation (bootstrap, build, release)
+├── session-log/        # Agent session logs (YYYY-MM-DD-slug.md)
 ├── .github/
-│   └── workflows/      # CI/CD pipeline templates
+│   ├── workflows/      # CI/CD pipeline templates
+│   └── PULL_REQUEST_TEMPLATE.md
 └── README.md
 ```
 
@@ -26,8 +28,9 @@ bash scripts/bootstrap.sh
 
 - [Stack Overview](docs/stack.md)
 - [Branching Strategy](docs/branching.md)
-- [Release Checklist](docs/release-checklist.md)
 - [CI/CD Pipeline](docs/ci-cd.md)
+- [Release Checklist](docs/release-checklist.md)
+- [Hotfix Runbook](docs/hotfix-runbook.md)
 
 ## Related
 

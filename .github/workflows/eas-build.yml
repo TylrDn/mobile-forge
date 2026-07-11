@@ -4,11 +4,10 @@ on:
   push:
     branches:
       - develop
-      - main
 
 jobs:
   build:
-    name: EAS Build (${{ github.ref_name }})
+    name: EAS Preview Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,25 +41,9 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Determine build profile
-        id: profile
-        run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "profile=production" >> "$GITHUB_OUTPUT"
-          else
-            echo "profile=preview" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: EAS Build
+      - name: EAS Build (preview)
         run: |
           eas build \
             --platform all \
-            --profile ${{ steps.profile.outputs.profile }} \
-            --non-interactive
-
-      - name: EAS Submit (production only)
-        if: github.ref_name == 'main'
-        run: |
-          eas submit \
-            --platform all \
+            --profile preview \
             --non-interactive

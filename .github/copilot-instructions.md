@@ -78,16 +78,15 @@ chore/*     — maintenance / tooling
 | `scripts/bootstrap.sh` | One-command dev environment setup |
 | `scripts/env-check.sh` | Verify required CLI tools are present |
 | `.github/workflows/ci.yml` | Lint + typecheck + test on every PR |
-| `.github/workflows/release.yml` | Expo build + deploy on semver tag push |
-| `.github/workflows/eas-build.yml` | EAS build on push to develop/main |
+| `.github/workflows/eas-build.yml` | EAS preview build on push to develop |
+| `.github/workflows/release.yml` | EAS production build + submit on semver tag push |
 
 ---
 
 ## CI/CD
 
 - **PR**: `ci.yml` runs lint (Biome), typecheck (tsc --noEmit), and tests (bun test)
-- **Push to develop**: `eas-build.yml` triggers EAS preview build
-- **Push to main**: `eas-build.yml` triggers EAS production build + submit
+- **Push to develop**: `eas-build.yml` triggers EAS preview build (iOS + Android)
 - **Semver tag** (`v*.*.*`): `release.yml` triggers EAS production build + submit
 
 ---
